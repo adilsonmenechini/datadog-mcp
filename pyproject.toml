@@ -1,0 +1,40 @@
+[project]
+name = "mcp-datadog"
+version = "1.0.0"
+description = "Datadog MCP server - 165+ tools for metrics, monitors, logs, APM, RUM, incidents, CI/CD, and more"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "us-all"}]
+keywords = ["mcp", "datadog", "monitoring", "observability", "apm", "rum"]
+
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "datadog-api-client>=2.0.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+mcp-datadog = "mcp_datadog:main"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
