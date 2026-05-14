@@ -112,8 +112,3 @@ This server follows the [Model Context Protocol](https://modelcontextprotocol.io
 - ✅ **Prompts** - Workflow-guided prompt templates
 - ✅ **Resources** - Addressable data via URI templates
 - ✅ **stdio Transport** - Standard input/output communication
-
-## Credits
-
-Original TypeScript implementation: https://github.com/us-all/datadog-mcp-server
-Reference Python implementation: https://github.com/shelfio/datadog-mcp
