@@ -1,4 +1,4 @@
-# Datadog MCP Server (Python/FastMCP)
+# Datadog MCP Server
 
 A Python implementation of the Datadog MCP server using FastMCP framework.
 
