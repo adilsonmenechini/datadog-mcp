@@ -11,8 +11,19 @@ Components:
 
 __version__ = "1.0.0"
 
-from .server import mcp, main
-from .tool_registry import registry, search_tools_handler, ToolInfo
+# Lazy imports to avoid circular dependencies when dev_server runs
+def __getattr__(name: str):
+    if name == "mcp":
+        from .server import mcp
+        return mcp
+    if name == "main":
+        from .server import main
+        return main
+    if name in ("registry", "search_tools_handler", "ToolInfo"):
+        from .tool_registry import registry, search_tools_handler, ToolInfo
+        return {"registry": registry, "search_tools_handler": search_tools_handler, "ToolInfo": ToolInfo}[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 __all__ = [
     "mcp",

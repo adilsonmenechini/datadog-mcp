@@ -1,9 +1,12 @@
 """Entry point for mcp dev command."""
 
+import os
+from typing import Any
+
 from mcp.server.fastmcp import FastMCP
 
-# Import from package to avoid relative import issues when running directly
-from mcp_datadog.config import validate_config
+# Import from package - circular import fixed via lazy imports in __init__.py
+from mcp_datadog.config import validate_config, config
 from mcp_datadog.tool_registry import registry, search_tools_handler
 from mcp_datadog.tools.metrics import (
     query_metrics,
@@ -64,9 +67,8 @@ mcp = FastMCP(
     instructions="Datadog MCP server - 165+ tools for metrics, monitors, logs, APM, RUM, incidents, CI/CD, and more",
 )
 
-# Validate config before starting (skip for dev mode with env vars)
-import os
-if os.getenv("DD_API_KEY") and os.getenv("DD_APP_KEY"):
+# Validate config only if keys are present (dev mode - skip if not set yet)
+if config.api_key and config.app_key:
     validate_config()
 
 # Register prompts
@@ -142,9 +144,8 @@ _register_tool("delete-event", "Delete a Datadog event.", delete_event, "events"
 
 # Meta tool
 @mcp.tool()
-def search_tools(query: str = ""):
+def search_tools(query: str = "") -> dict[str, Any]:
     """Discover available tools by natural language query."""
-    from typing import Any
     return {"tools": search_tools_handler(query)}
 
 
