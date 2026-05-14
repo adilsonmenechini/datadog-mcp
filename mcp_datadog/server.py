@@ -4,60 +4,118 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
-from .config import validate_config
-from .tool_registry import registry, search_tools_handler
-from .tools.metrics import (
-    query_metrics,
-    get_metrics,
-    get_metric_metadata,
-    list_active_metrics,
-    list_metric_tags,
-)
-from .tools.monitors import (
-    get_monitors,
-    get_monitor,
-    create_monitor,
-    update_monitor,
-    delete_monitor,
-    validate_monitor,
-    mute_monitor,
-)
-from .tools.logs import search_logs, aggregate_logs, send_logs, search_audit_logs
-from .tools.incidents import (
-    get_incidents,
-    get_incident,
-    search_incidents,
-    create_incident,
-    update_incident,
-    delete_incident,
-)
-from .tools.apm import (
-    search_spans,
-    list_services,
-    get_service_definition,
-    get_service_dependencies,
-    get_all_service_dependencies,
-)
-from .tools.synthetics import (
-    list_synthetics,
-    get_synthetics_result,
-    trigger_synthetics,
-    create_synthetics_test,
-    update_synthetics_test,
-    delete_synthetics_test,
-)
-from .tools.fleet import (
-    list_fleet_agents,
-    get_fleet_agent_info,
-    list_fleet_clusters,
-    list_fleet_deployments,
-    create_fleet_deployment_configure,
-    cancel_fleet_deployment,
-)
-from .tools.error_tracking import list_error_trackers, get_error_tracker, search_error_events
-from .tools.events import search_events, get_event, create_event, update_event, delete_event
-from .prompts import register_prompts
-from .resources import register_resources
+# Support both package import and direct execution (mcp dev)
+try:
+    from .config import validate_config, config as _config
+    from .tool_registry import registry, search_tools_handler
+    from .tools.metrics import (
+        query_metrics,
+        get_metrics,
+        get_metric_metadata,
+        list_active_metrics,
+        list_metric_tags,
+    )
+    from .tools.monitors import (
+        get_monitors,
+        get_monitor,
+        create_monitor,
+        update_monitor,
+        delete_monitor,
+        validate_monitor,
+        mute_monitor,
+    )
+    from .tools.logs import search_logs, aggregate_logs, send_logs, search_audit_logs
+    from .tools.incidents import (
+        get_incidents,
+        get_incident,
+        search_incidents,
+        create_incident,
+        update_incident,
+        delete_incident,
+    )
+    from .tools.apm import (
+        search_spans,
+        list_services,
+        get_service_definition,
+        get_service_dependencies,
+        get_all_service_dependencies,
+    )
+    from .tools.synthetics import (
+        list_synthetics,
+        get_synthetics_result,
+        trigger_synthetics,
+        create_synthetics_test,
+        update_synthetics_test,
+        delete_synthetics_test,
+    )
+    from .tools.fleet import (
+        list_fleet_agents,
+        get_fleet_agent_info,
+        list_fleet_clusters,
+        list_fleet_deployments,
+        create_fleet_deployment_configure,
+        cancel_fleet_deployment,
+    )
+    from .tools.error_tracking import list_error_trackers, get_error_tracker, search_error_events
+    from .tools.events import search_events, get_event, create_event, update_event, delete_event
+    from .prompts import register_prompts
+    from .resources import register_resources
+except ImportError:
+    # Fallback for mcp dev command - use absolute imports
+    from mcp_datadog.config import validate_config, config as _config
+    from mcp_datadog.tool_registry import registry, search_tools_handler
+    from mcp_datadog.tools.metrics import (
+        query_metrics,
+        get_metrics,
+        get_metric_metadata,
+        list_active_metrics,
+        list_metric_tags,
+    )
+    from mcp_datadog.tools.monitors import (
+        get_monitors,
+        get_monitor,
+        create_monitor,
+        update_monitor,
+        delete_monitor,
+        validate_monitor,
+        mute_monitor,
+    )
+    from mcp_datadog.tools.logs import search_logs, aggregate_logs, send_logs, search_audit_logs
+    from mcp_datadog.tools.incidents import (
+        get_incidents,
+        get_incident,
+        search_incidents,
+        create_incident,
+        update_incident,
+        delete_incident,
+    )
+    from mcp_datadog.tools.apm import (
+        search_spans,
+        list_services,
+        get_service_definition,
+        get_service_dependencies,
+        get_all_service_dependencies,
+    )
+    from mcp_datadog.tools.synthetics import (
+        list_synthetics,
+        get_synthetics_result,
+        trigger_synthetics,
+        create_synthetics_test,
+        update_synthetics_test,
+        delete_synthetics_test,
+    )
+    from mcp_datadog.tools.fleet import (
+        list_fleet_agents,
+        get_fleet_agent_info,
+        list_fleet_clusters,
+        list_fleet_deployments,
+        create_fleet_deployment_configure,
+        cancel_fleet_deployment,
+    )
+    from mcp_datadog.tools.error_tracking import list_error_trackers, get_error_tracker, search_error_events
+    from mcp_datadog.tools.events import search_events, get_event, create_event, update_event, delete_event
+    from mcp_datadog.prompts import register_prompts
+    from mcp_datadog.resources import register_resources
 
 # Initialize FastMCP server
 mcp = FastMCP(
@@ -66,7 +124,10 @@ mcp = FastMCP(
 )
 
 # Validate config before starting
-validate_config()
+# When running via 'mcp dev', the module is imported directly which triggers
+# the except ImportError branch. We check if keys exist before validating.
+if _config.api_key and _config.app_key:
+    validate_config()
 
 # Register prompts
 register_prompts(mcp)
